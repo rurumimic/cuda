@@ -60,3 +60,4 @@ GPU Device 0: "Ampere" with compute capability 8.6
 Read 3223503 byte corpus from ./warandpeace.txt
 counted 107310 instances of 'x', 'y', 'z', or 'w' in "./warandpeace.txt"
 ```
+
