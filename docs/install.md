@@ -45,3 +45,9 @@ export PATH=/usr/local/cuda-12.3/bin${PATH:+:${PATH}}
 export LD_LIBRARY_PATH=/usr/local/cuda-12.3/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 ```
 
+### libstdc++-12-dev
+
+```bash
+sudo apt install -y libstdc++-12-dev
+```
+

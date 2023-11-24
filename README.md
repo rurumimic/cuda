@@ -20,21 +20,6 @@ compute_cap
 8.6
 ```
 
-### SM Architectures
-
-```bash
-export SMS="86"
-```
-
-### clangd
-
-```yaml
-CompileFlags:
-  Add:
-    - "--cuda-gpu-arch=sm_86"
-    - "-L/usr/local/cuda-12.3/lib64"
-```
-
 ## Code
 
 ### Samples
@@ -43,14 +28,17 @@ CompileFlags:
 git clone https://github.com/NVIDIA/cuda-samples.git
 ```
 
-```bash
-make HOST_COMPILER=g++ SMS="86" dbg=1
-make HOST_COMPILER=clang++ SMS="86" dbg=1
-```
-
 #### c++11_cuda
 
 - Introduction: [c++11_cuda](https://github.com/NVIDIA/cuda-samples/tree/master/Samples/0_Introduction/c++11_cuda)
+
+##### Compile
+
+```bash
+make HOST_COMPILER=g++ SMS="86" dbg=1
+```
+
+#### Run
 
 ```bash
 ./c++11_cuda
