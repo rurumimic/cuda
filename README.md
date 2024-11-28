@@ -9,6 +9,8 @@
   - [samples](https://developer.nvidia.com/cuda-code-samples)
   - github: [nvidia/cuda-samples](https://github.com/nvidia/cuda-samples)
 
+---
+
 ## GPU Compute Capability
 
 - [gpu compute capability](https://developer.nvidia.com/cuda-gpus)
@@ -19,6 +21,8 @@ nvidia-smi --query-gpu=compute_cap --format=csv
 compute_cap
 8.6
 ```
+
+---
 
 ## Code
 
@@ -48,4 +52,10 @@ GPU Device 0: "Ampere" with compute capability 8.6
 Read 3223503 byte corpus from ./warandpeace.txt
 counted 107310 instances of 'x', 'y', 'z', or 'w' in "./warandpeace.txt"
 ```
+
+---
+
+## Docs
+
+- [install](docs/install.md)
 

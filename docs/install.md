@@ -4,11 +4,13 @@
 - docs
   - [NVIDIA CUDA Installation Guide for Linux](https://docs.nvidia.com/cuda/cuda-installation-guide-linux)
 
+---
+
 ## Ubuntu 22.04
 
 - CUDA Toolkit 12.3 Update 1
 
-### Base Installer
+### CUDA Toolkit Installer
 
 ```bash
 wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
@@ -49,5 +51,68 @@ export LD_LIBRARY_PATH=/usr/local/cuda-12.3/lib64${LD_LIBRARY_PATH:+:${LD_LIBRAR
 
 ```bash
 sudo apt install -y libstdc++-12-dev
+```
+
+---
+
+## Arch Linux
+
+- wiki: [gpgpu](https://wiki.archlinux.org/title/GPGPU)
+- arch packages: [cuda](https://archlinux.org/packages/extra/x86_64/cuda/)
+
+### CUDA Toolkit Installer
+
+```bash
+sudo pacman -Syu cuda
+```
+
+```bash
+Packages (8) alsa-ucm-conf-1.2.13-2  alsa-utils-1.2.13-2  gcc13-13.3.1+r432+gfc8bd63119c0-1 gcc13-libs-13.3.1+r432+gfc8bd63119c0-1  github-cli-2.63.0-1  libzip-1.11.2-1 opencl-nvidia-565.57.01-2  cuda-12.6.3-1
+```
+
+```bash
+Total Download Size:   1897.05 MiB
+Total Installed Size:  5150.12 MiB
+Net Upgrade Size:      5105.97 MiB
+```
+
+```bash
+- The cuda binaries are in /opt/cuda/bin/
+- The cuda samples are in /opt/cuda/samples/
+- The cuda docs are in /opt/cuda/doc/
+- You need to source /etc/profile or restart your session in order for the CUDA
+  binaries to appear in your $PATH
+- The default host compiler for nvcc is set by the $NVCC_CCBIN environment
+  variable in /etc/profile.d/cuda.sh
+- The default host compiler for nvcc is no longer configured using symlinks in
+  /opt/cuda/bin/ but by the $NVCC_CCBIN environment variable in
+  /etc/profile.d/cuda.sh.  You need to source /etc/profile or restart your
+  session for it to be available in your environment.  Additionally, you may
+  need to clear the build cache of your projects where the old path may have
+  been recorded.
+- When you uninstall an old, unrequired version of GCC that was previously
+  required by cuda for the default host compiler ($NVCC_CCBIN), you may need
+  to source /etc/profile or restart your session.  Additionally, you may need
+  to clear the build cache of your projects where the old path may be still
+  recorded.
+
+Optional dependencies for cuda
+    gdb: for cuda-gdb
+    glu: required for some profiling tools in CUPTI
+    nvidia-utils: for NVIDIA drivers (not needed in CDI containers) [installed]
+    rdma-core: for GPUDirect Storage (libcufile_rdma.so)
+```
+
+### Driver Installer
+
+```bash
+sudo pacman -Syu nvidia
+```
+
+### Env
+
+```bash
+export PATH=/opt/cuda/bin/${PATH:+:${PATH}}
+export LD_LIBRARY_PATH=/opt/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 ```
 
