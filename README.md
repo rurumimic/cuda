@@ -5,6 +5,7 @@
   - [gpu compute capability](https://developer.nvidia.com/cuda-gpus)
 - docs
   - [quick start](https://docs.nvidia.com/cuda/cuda-quick-start-guide/index.html)
+  - [support compiler](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/#host-compiler-support-policy)
 - source
   - [samples](https://developer.nvidia.com/cuda-code-samples)
   - github: [nvidia/cuda-samples](https://github.com/nvidia/cuda-samples)
@@ -36,10 +37,15 @@ git clone https://github.com/NVIDIA/cuda-samples.git
 
 - Introduction: [c++11_cuda](https://github.com/NVIDIA/cuda-samples/tree/master/Samples/0_Introduction/c++11_cuda)
 
+```bash
+cd Samples/0_Introduction/c++11_cuda
+```
+
 ##### Compile
 
 ```bash
 make HOST_COMPILER=g++ SMS="86" dbg=1
+make HOST_COMPILER=g++-13 SMS="86" dbg=1
 ```
 
 #### Run
