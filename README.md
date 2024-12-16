@@ -6,6 +6,7 @@
 - docs
   - [quick start](https://docs.nvidia.com/cuda/cuda-quick-start-guide/index.html)
   - [support compiler](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/#host-compiler-support-policy)
+  - [best practices guide](https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/)
 - source
   - [samples](https://developer.nvidia.com/cuda-code-samples)
   - github: [nvidia/cuda-samples](https://github.com/nvidia/cuda-samples)
@@ -64,4 +65,5 @@ counted 107310 instances of 'x', 'y', 'z', or 'w' in "./warandpeace.txt"
 ## Docs
 
 - [install](docs/install.md)
+- [clang](docs/clang.md)
 
