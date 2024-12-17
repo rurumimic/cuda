@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
   checkCudaError(cudaGetLastError(), "Failed to launch kernel");
 
   printf("Copy: device to host\n");
-  copyToDevice(h_c, d_c, size, "Failed to copy d_c to host");
+  copyToHost(h_c, d_c, size, "Failed to copy d_c to host");
 
   for (int i = 0; i < LENGTH; i++) {
     if (fabs(h_a[i] + h_b[i] - h_c[i]) > 1e-5) {
