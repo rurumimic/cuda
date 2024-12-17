@@ -1,6 +1,11 @@
 #include <cuda_runtime.h>
 #include <stdio.h>
 
+#include <string>
+
+#define LENGTH 50000
+#define THREADS_PER_BLOCK 256
+
 __global__ void vector_add(const float *a, const float *b, float *c,
                            int length) {
   int i = blockDim.x * blockIdx.x + threadIdx.x;
@@ -10,10 +15,40 @@ __global__ void vector_add(const float *a, const float *b, float *c,
   }
 }
 
-int main(int argc, char *argv[]) {
-  cudaError_t err = cudaSuccess;
+void checkCudaError(cudaError_t err, const char *msg) {
+  if (err != cudaSuccess) {
+    fprintf(stderr, "%s: %s\n", msg, cudaGetErrorString(err));
+    exit(EXIT_FAILURE);
+  }
+}
 
-  int LENGTH = 50000;
+void allocateDeviceMemory(float **d_ptr, size_t size, const char *name) {
+  cudaError_t err = cudaMalloc((void **)d_ptr, size);
+  checkCudaError(
+      err,
+      (std::string("Failed to allocate device memory for ") + name).c_str());
+}
+
+void freeDeviceMemory(void *d_ptr, const char *name) {
+  cudaError_t err = cudaFree(d_ptr);
+  if (err != cudaSuccess) {
+    fprintf(stderr, "Failed to free device memory for %s: %s\n", name,
+            cudaGetErrorString(err));
+    exit(EXIT_FAILURE);
+  }
+}
+
+void copyToDevice(float *d_dst, const float *h_src, size_t size,
+                  const char *msg) {
+  checkCudaError(cudaMemcpy(d_dst, h_src, size, cudaMemcpyHostToDevice), msg);
+}
+
+void copyToHost(float *h_dst, const float *d_src, size_t size,
+                const char *msg) {
+  checkCudaError(cudaMemcpy(h_dst, d_src, size, cudaMemcpyDeviceToHost), msg);
+}
+
+int main(int argc, char *argv[]) {
   size_t size = LENGTH * sizeof(float);
   printf("Vector length: %d\n", LENGTH);
 
@@ -31,65 +66,24 @@ int main(int argc, char *argv[]) {
     h_b[i] = rand() / (float)RAND_MAX;
   }
 
-  float *d_a = NULL;
-  err = cudaMalloc((void **)&d_a, size);
-  if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to allocate device vector: %s\n",
-            cudaGetErrorString(err));
-    exit(EXIT_FAILURE);
-  }
-
-  float *d_b = NULL;
-  err = cudaMalloc((void **)&d_b, size);
-  if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to allocate device vector: %s\n",
-            cudaGetErrorString(err));
-    exit(EXIT_FAILURE);
-  }
-
-  float *d_c = NULL;
-  err = cudaMalloc((void **)&d_c, size);
-  if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to allocate device vector: %s\n",
-            cudaGetErrorString(err));
-    exit(EXIT_FAILURE);
-  }
+  float *d_a, *d_b, *d_c;
+  allocateDeviceMemory(&d_a, size, "d_a");
+  allocateDeviceMemory(&d_b, size, "d_b");
+  allocateDeviceMemory(&d_c, size, "d_c");
 
   printf("Copy: host to device\n");
 
-  err = cudaMemcpy(d_a, h_a, size, cudaMemcpyHostToDevice);
-  if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to copy vector from host to device: %s\n",
-            cudaGetErrorString(err));
-    exit(EXIT_FAILURE);
-  }
+  copyToDevice(d_a, h_a, size, "Failed to copy h_a to device");
+  copyToDevice(d_b, h_b, size, "Failed to copy h_b to device");
 
-  err = cudaMemcpy(d_b, h_b, size, cudaMemcpyHostToDevice);
-  if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to copy vector from host to device: %s\n",
-            cudaGetErrorString(err));
-    exit(EXIT_FAILURE);
-  }
-
-  int threadsPerBlock = 256;
-  int blocksPerGrid = (LENGTH + threadsPerBlock - 1) / threadsPerBlock;
+  int blocksPerGrid = (LENGTH + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
   printf("CUDA kernel: %d blocks x %d threads\n", blocksPerGrid,
-         threadsPerBlock);
-  vector_add<<<blocksPerGrid, threadsPerBlock>>>(d_a, d_b, d_c, LENGTH);
-  err = cudaGetLastError();
-
-  if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to launch kernel: %s\n", cudaGetErrorString(err));
-    exit(EXIT_FAILURE);
-  }
+         THREADS_PER_BLOCK);
+  vector_add<<<blocksPerGrid, THREADS_PER_BLOCK>>>(d_a, d_b, d_c, LENGTH);
+  checkCudaError(cudaGetLastError(), "Failed to launch kernel");
 
   printf("Copy: device to host\n");
-  err = cudaMemcpy(h_c, d_c, size, cudaMemcpyDeviceToHost);
-  if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to copy vector from device to host: %s\n",
-            cudaGetErrorString(err));
-    exit(EXIT_FAILURE);
-  }
+  copyToDevice(h_c, d_c, size, "Failed to copy d_c to host");
 
   for (int i = 0; i < LENGTH; i++) {
     if (fabs(h_a[i] + h_b[i] - h_c[i]) > 1e-5) {
@@ -98,33 +92,16 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  printf("OK\n");
+  printf("Result verification: OK\n");
 
-  err = cudaFree(d_a);
-  if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to free device vector: %s\n",
-            cudaGetErrorString(err));
-    exit(EXIT_FAILURE);
-  }
-
-  err = cudaFree(d_b);
-  if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to free device vector: %s\n",
-            cudaGetErrorString(err));
-    exit(EXIT_FAILURE);
-  }
-
-  err = cudaFree(d_c);
-  if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to free device vector: %s\n",
-            cudaGetErrorString(err));
-    exit(EXIT_FAILURE);
-  }
+  freeDeviceMemory(d_a, "d_a");
+  freeDeviceMemory(d_b, "d_b");
+  freeDeviceMemory(d_c, "d_c");
 
   free(h_a);
   free(h_b);
   free(h_c);
 
-  printf("End\n");
+  printf("Program completed successfully.\n");
   return 0;
 }
