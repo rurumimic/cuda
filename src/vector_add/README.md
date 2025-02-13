@@ -16,7 +16,7 @@ Vector length: 50000
 Copy: host to device
 CUDA kernel: 196 blocks x 256 threads
 Copy: device to host
-OK
-End
+Result verification: OK
+Program completed successfully.
 ```
 
