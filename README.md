@@ -45,6 +45,7 @@ cd Samples/0_Introduction/c++11_cuda
 ##### Compile
 
 ```bash
+make HOST_COMPILER=clang++ SMS="86" dbg=1
 make HOST_COMPILER=g++ SMS="86" dbg=1
 make HOST_COMPILER=g++-13 SMS="86" dbg=1
 ```
@@ -65,5 +66,5 @@ counted 107310 instances of 'x', 'y', 'z', or 'w' in "./warandpeace.txt"
 ## Docs
 
 - [install](docs/install.md)
-- [clang](docs/clang.md)
+- [clang](docs/clang.md): format
 
