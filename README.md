@@ -67,4 +67,6 @@ counted 107310 instances of 'x', 'y', 'z', or 'w' in "./warandpeace.txt"
 
 - [install](docs/install.md)
 - [clang](docs/clang.md): format
+- [api](docs/api.md): driver, runtime
+
 
