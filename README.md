@@ -74,6 +74,5 @@ counted 107310 instances of 'x', 'y', 'z', or 'w' in "./warandpeace.txt"
 ## Code
 
 - Hello CUDA: [hello_cuda](src/hello_cuda/README.md), [hello_cuda with C++](src/hello_cuda_cpp/README.md)
-
-
+- Vector: [vector_add](src/vector_add/README.md)
 
