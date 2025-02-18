@@ -8,5 +8,6 @@ int main(int argc, char *argv[]) {
   launchHelloCUDA();
 
   printf("Program completed successfully.\n");
+
   return 0;
 }

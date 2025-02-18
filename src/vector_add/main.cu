@@ -6,8 +6,7 @@
 #define LENGTH 50000
 #define THREADS_PER_BLOCK 256
 
-__global__ void vector_add(const float *a, const float *b, float *c,
-                           int length) {
+__global__ void vector_add(const float *a, const float *b, float *c, int length) {
   int i = blockDim.x * blockIdx.x + threadIdx.x;
 
   if (i < length) {
@@ -24,27 +23,22 @@ void checkCudaError(cudaError_t err, const char *msg) {
 
 void allocateDeviceMemory(float **d_ptr, size_t size, const char *name) {
   cudaError_t err = cudaMalloc((void **)d_ptr, size);
-  checkCudaError(
-      err,
-      (std::string("Failed to allocate device memory for ") + name).c_str());
+  checkCudaError(err, (std::string("Failed to allocate device memory for ") + name).c_str());
 }
 
 void freeDeviceMemory(void *d_ptr, const char *name) {
   cudaError_t err = cudaFree(d_ptr);
   if (err != cudaSuccess) {
-    fprintf(stderr, "Failed to free device memory for %s: %s\n", name,
-            cudaGetErrorString(err));
+    fprintf(stderr, "Failed to free device memory for %s: %s\n", name, cudaGetErrorString(err));
     exit(EXIT_FAILURE);
   }
 }
 
-void copyToDevice(float *d_dst, const float *h_src, size_t size,
-                  const char *msg) {
+void copyToDevice(float *d_dst, const float *h_src, size_t size, const char *msg) {
   checkCudaError(cudaMemcpy(d_dst, h_src, size, cudaMemcpyHostToDevice), msg);
 }
 
-void copyToHost(float *h_dst, const float *d_src, size_t size,
-                const char *msg) {
+void copyToHost(float *h_dst, const float *d_src, size_t size, const char *msg) {
   checkCudaError(cudaMemcpy(h_dst, d_src, size, cudaMemcpyDeviceToHost), msg);
 }
 
@@ -77,8 +71,7 @@ int main(int argc, char *argv[]) {
   copyToDevice(d_b, h_b, size, "Failed to copy h_b to device");
 
   int blocksPerGrid = (LENGTH + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
-  printf("CUDA kernel: %d blocks x %d threads\n", blocksPerGrid,
-         THREADS_PER_BLOCK);
+  printf("CUDA kernel: %d blocks x %d threads\n", blocksPerGrid, THREADS_PER_BLOCK);
   vector_add<<<blocksPerGrid, THREADS_PER_BLOCK>>>(d_a, d_b, d_c, LENGTH);
   checkCudaError(cudaGetLastError(), "Failed to launch kernel");
 
