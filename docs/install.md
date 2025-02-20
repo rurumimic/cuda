@@ -3,6 +3,7 @@
 - cuda: [downloads](https://developer.nvidia.com/cuda-downloads)
 - docs
   - [NVIDIA CUDA Installation Guide for Linux](https://docs.nvidia.com/cuda/cuda-installation-guide-linux)
+  - [container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)
 
 ---
 
@@ -157,6 +158,112 @@ sudo apt-get install -y nvidia-open
 ```bash
 export PATH=/usr/local/cuda-12.8/bin${PATH:+:${PATH}}
 export LD_LIBRARY_PATH=/usr/local/cuda-12.8/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+```
+
+### Container Toolkit
+
+```bash
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+```
+
+```bash
+sudo apt-get update
+```
+
+```bash
+sudo apt-get install -y nvidia-container-toolkit
+```
+
+<details>
+    <summary>installing...</summary>
+
+```bash
+=================================================================
+ Installing
+=================================================================
+  Package:                            Version:            Size:
+  libnvidia-container-tools           1.17.4-1            22 KB
+  libnvidia-container1                1.17.4-1           926 KB
+  nvidia-container-toolkit            1.17.4-1           1.2 MB
+  nvidia-container-toolkit-base       1.17.4-1           3.7 MB
+
+=================================================================
+ Summary
+=================================================================
+ Install 4 Packages
+
+ Total download size   5.8 MB
+ Disk space required  27.7 MB
+```
+
+</details>
+
+#### Configure Docker
+
+add in `daemon.json`:
+
+```bash
+nvidia-ctk runtime configure --runtime=docker --config=$HOME/.config/daemon.json
+nvidia-ctk runtime configure --runtime=docker --config=$HOME/.config/docker/daemon.json
+```
+
+```json
+{
+    "runtimes": {
+        "nvidia": {
+            "args": [],
+            "path": "nvidia-container-runtime"
+        }
+    }
+}
+```
+
+```bash
+sudo systemctl restart docker
+```
+
+option:
+
+```bash
+sudo nvidia-ctk config --set nvidia-container-cli.no-cgroups=false --in-place
+```
+
+```bash
+cat /etc/nvidia-container-runtime/config.toml
+
+[nvidia-container-cli]
+#no-cgroups = false
+```
+
+#### Test a workload
+
+```bash
+docker run --rm --runtime=nvidia --gpus all \
+  --device /dev/nvidia0:/dev/nvidia0 \
+  --device /dev/nvidiactl:/dev/nvidiactl \
+  --device /dev/nvidia-uvm:/dev/nvidia-uvm \
+  --device /dev/nvidia-uvm-tools:/dev/nvidia-uvm-tools \
+  ubuntu nvidia-smi
+```
+
+```bash
+docker run --rm -it --gpus=all nvcr.io/nvidia/k8s/cuda-sample:nbody nbody -gpu -benchmark
+```
+
+```bash
+docker run --rm -it --gpus=all \
+  --device /dev/nvidia0:/dev/nvidia0 \
+  --device /dev/nvidiactl:/dev/nvidiactl \
+  --device /dev/nvidia-uvm:/dev/nvidia-uvm \
+  --device /dev/nvidia-uvm-tools:/dev/nvidia-uvm-tools \
+nvcr.io/nvidia/k8s/cuda-sample:nbody nbody -gpu -benchmark
+```
+
+```bash
+docker run --rm -it --gpus '"device=0"' nvcr.io/nvidia/k8s/cuda-sample:nbody nbody -gpu -benchmark
 ```
 
 ---
