@@ -1,19 +1,4 @@
-# HuggingFace
-
-## Install HuggingFace CLI
-
-### Python venv
-
-```bash
-uv venv
-source .venv/bin/activate
-```
-
-### Install HF Transfer
-
-```bash
-uv pip install "huggingface_hub[hf_transfer]"
-```
+# nomic-embed text v1.5
 
 ## Download a Model
 
@@ -53,5 +38,61 @@ model_repository
     │       ├── tokenizer.json
     │       └── vocab.txt
     └── config.pbtxt
+```
+
+## Run triton
+
+in this project root:
+
+```bash
+docker run --rm \
+--gpus 1 \
+-p 8000:8000 \
+-p 8001:8001 \
+-p 8002:8002 \
+-v ${PWD}/model_repository:/models \
+nvcr.io/nvidia/tritonserver:25.01-py3 \
+tritonserver \
+--model-repository /models \
+--model-control-mode explicit \
+--load-model nomic-embed-text-v1.5 \
+--log-verbose 1 \
+--log-info 1 \
+--log-error 1
+```
+
+## HTTP Client Request
+
+```bash
+cd model_repository/nomic-embed-text-v1/tests
+```
+
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d @input.json \
+  http://localhost:8000/v2/models/nomic-embed-text-v1.5/infer | jq | bat -l json
+```
+
+```json
+{
+  "model_name": "nomic-embed-text-v1.5",
+  "model_version": "1",
+  "outputs": [
+    {
+      "name": "last_hidden_state",
+      "datatype": "FP32",
+      "shape": [
+        1,
+        9,
+        768
+      ],
+      "data": [
+        0.1320551633834839,
+        0.2668861746788025
+      ]
+    }
+  ]
+}
 ```
 
