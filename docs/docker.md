@@ -61,7 +61,7 @@ func (p *initProcess) start() (retErr error) {
 
 ## Nvidia
 
-- docss: [container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/arch-overview.html)
+- docs: [container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/arch-overview.html)
 
 ![libnvidia-container](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/_images/runtime-architecture.png)
 
@@ -116,23 +116,22 @@ nvidia-smi
 
 ### libnvidia-container
 
+```bash
+git clone https://github.com/NVIDIA/libnvidia-container
+```
+
 #### Build
 
 ```bash
 sudo apt-get install -y libntirpc-dev
 ```
 
-##### in a docker container
-
-```bash
-git clone https://github.com/NVIDIA/libnvidia-container
-docker run --rm -it -v $PWD/libnvidia-container:/libnvidia-container ubuntu:20.04 bash
-```
+##### in 20.04
 
 ```bash
 export DEBIAN_FRONTEND=noninteractive
-apt-get update
-apt-get install -y --no-install-recommends \
+sudo apt-get update
+sudo apt-get install -y --no-install-recommends \
         apt-utils \
         bmake \
         build-essential \
@@ -155,13 +154,13 @@ apt-get install -y --no-install-recommends \
 ```
 
 ```bash
-curl -L https://go.dev/dl/go1.23.6.linux-amd64.tar.gz | tar -C /usr/local -x
+curl -L https://go.dev/dl/go1.23.6.linux-amd64.tar.gz | sudo tar -C /usr/local -xz
 export GOPATH=/go
 export PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 ```
 
 ```bash
-cd /libnvidia-container
+cd libnvidia-container
 ```
 
 ```bash
@@ -192,7 +191,7 @@ bear make
 
 ```bash
 cp compile_commands.json compile_commands.json.bk
-sed -i "s|/libnvidia-container|$PWD|g" compile_commands.json
+# sed -i "s|/libnvidia-container|$PWD|g" compile_commands.json
 sed -i '/"-fplan9-extensions",/d' compile_commands.json
 ```
 
@@ -202,12 +201,28 @@ sed -i '/"-fplan9-extensions",/d' compile_commands.json
 CompileFlags:
   Add:
     - -std=gnu11
-    - -Ideps/src/usr/local/include
+    - -I./deps/usr/local/include
     - -I/usr/include/ntirpc
 Diagnostics:
   Suppress:
     - -Wimplicit-function-declaration
 ```
+
+#### source
+
+- src/cli/main.c: int main - load_libnvc()
+- src/cli/libnvc.c: int load_libnvc() - load_libnvc_v1()
+  - static int load_libnvc_v1() - load_libnvc_func(init)
+- src/cli/libnvc.h: struct libnvc
+  - libnvc_entry(container_new)
+  - libnvc_entry(driver_new)
+  - libnvc_entry(init)
+- src/nvc.c: int nvc_init()
+  - driver_init()
+    - src/driver.c: rpc_init()
+      - src/rpc.c - setup_service() - svc_run()
+  - nvcgo_init()
+    - src/nvcgo.c: rpc_init()
 
 #### Build a package
 
