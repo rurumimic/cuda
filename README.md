@@ -70,7 +70,10 @@ counted 107310 instances of 'x', 'y', 'z', or 'w' in "./warandpeace.txt"
 - [api](docs/api.md): driver, runtime
 - [huggingface](docs/huggingface.md)
   - [text embeddings inference](docs/text.embeddings.inference.md)
-- [triton](docs/triton.md)
+- [docker](docs/docker.md)
+- nvidia
+  - [triton](docs/triton.md)
+  - [libnvidia-container](docs/libnvidia.container.md)
 
 ---
 
