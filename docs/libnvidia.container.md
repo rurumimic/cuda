@@ -93,7 +93,11 @@ make dist
 ```bash
 apt-get install -y bear
 git config --global --add safe.directory $PWD/libnvidia-container
+
+# bear v2
 bear make
+# bear v3
+bear -- make
 ```
 
 ```bash
