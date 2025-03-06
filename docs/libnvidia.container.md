@@ -71,9 +71,17 @@ export PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 ```
 
 ```bash
+export CC=gcc
+export CXX=g++
+```
+
+- gcc: Ubuntu 11.4.0-1ubuntu1~22.04
+- g++: Ubuntu 11.4.0-1ubuntu1~22.04
+
+```bash
 export WITH_NVCGO=yes
-export WITH_LIBELF=no
-export WITH_TIRPC=no
+export WITH_LIBELF=yes
+export WITH_TIRPC=yes
 export WITH_SECCOMP=yes
 ```
 
@@ -100,6 +108,8 @@ bear make
 bear -- make
 ```
 
+for clangd:
+
 ```bash
 cp compile_commands.json compile_commands.json.bk
 # sed -i "s|/libnvidia-container|$PWD|g" compile_commands.json
@@ -113,7 +123,7 @@ CompileFlags:
   Add:
     - -std=gnu11
     - -I./deps/usr/local/include
-    - -I/usr/include/ntirpc
+    # - -I/usr/include/ntirpc
 Diagnostics:
   Suppress:
     - -Wimplicit-function-declaration
