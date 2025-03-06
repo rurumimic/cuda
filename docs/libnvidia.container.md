@@ -124,9 +124,13 @@ CompileFlags:
     - -std=gnu11
     - -I./deps/usr/local/include
     # - -I/usr/include/ntirpc
+    - -fms-extensions
+    - -include
+    - stdbool.h
 Diagnostics:
   Suppress:
     - -Wimplicit-function-declaration
+    - -Wpragma_pop_visibility_mismatch
 ```
 
 ---
