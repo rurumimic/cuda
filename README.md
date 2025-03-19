@@ -74,6 +74,7 @@ counted 107310 instances of 'x', 'y', 'z', or 'w' in "./warandpeace.txt"
 - nvidia
   - [triton](docs/triton.md)
   - [libnvidia-container](docs/libnvidia.container.md)
+  - [dynamo](docs/dynamo.md)
 
 ---
 
