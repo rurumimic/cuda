@@ -3,12 +3,12 @@
 
 void checkCudaError(cudaError_t err, const char *msg);
 
-__global__ void helloUDA(void) { printf("Hello CUDA from GPU!\n"); }
+__global__ void helloCUDA(void) { printf("Hello CUDA from GPU!\n"); }
 
 int main(int argc, char *argv[]) {
   printf("Hello CUDA from CPU!\n");
 
-  helloUDA<<<1, 1>>>();
+  helloCUDA<<<1, 1>>>();
   checkCudaError(cudaGetLastError(), "Failed to launch kernel");
 
   printf("Program completed successfully.\n");
