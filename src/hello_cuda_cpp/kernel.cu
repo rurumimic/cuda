@@ -2,10 +2,10 @@
 
 #include "kernel.h"
 
-__global__ void helloUDA(void) { printf("Hello CUDA from GPU!\n"); }
+__global__ void helloCUDA(void) { printf("Hello CUDA from GPU!\n"); }
 
 void launchHelloCUDA(void) {
-  helloUDA<<<1, 1>>>();
+  helloCUDA<<<1, 1>>>();
   checkCudaError(cudaGetLastError(), "Failed to launch kernel");
 }
 
