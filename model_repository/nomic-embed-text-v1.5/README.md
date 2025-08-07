@@ -51,7 +51,7 @@ docker run --rm \
 -p 8001:8001 \
 -p 8002:8002 \
 -v ${PWD}/model_repository:/models \
-nvcr.io/nvidia/tritonserver:25.01-py3 \
+nvcr.io/nvidia/tritonserver:25.07-py3 \
 tritonserver \
 --model-repository /models \
 --model-control-mode explicit \
@@ -61,10 +61,18 @@ tritonserver \
 --log-error 1
 ```
 
+### Error Message
+
+```bash
+docker: Error response from daemon: could not select device driver "" with capabilities: [[gpu]]
+```
+
+Install Container Toolkit: [docs/docker](../../docs/docker.md)
+
 ## HTTP Client Request
 
 ```bash
-cd model_repository/nomic-embed-text-v1/tests
+cd model_repository/nomic-embed-text-v1.5/tests
 ```
 
 ```bash
