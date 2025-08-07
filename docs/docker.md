@@ -3,6 +3,10 @@
 - github: [Open Container Initiative](https://github.com/opencontainers)
   - [opencontainers/runc](https://github.com/opencontainers/runc)
 
+## Install Docker Engine
+
+- docs: [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
+
 ## Containerd
 
 - containerd
@@ -91,16 +95,16 @@ func (p *initProcess) start() (retErr error) {
 #### in a tritonserver image
 
 ```bash
-docker run --rm -it --gpus all nvcr.io/nvidia/tritonserver:25.01-py3 bash
+docker run --rm -it --gpus all nvcr.io/nvidia/tritonserver:25.07-py3 bash
 ```
 
 ```bash
 ls -Fl /dev | grep nvidia
 
-crw-rw-rw- 1 root root 511,   0 Mar  3 03:09 nvidia-uvm
-crw-rw-rw- 1 root root 511,   1 Mar  3 03:09 nvidia-uvm-tools
-crw-rw-rw- 1 root root 195,   0 Mar  3 03:08 nvidia0
-crw-rw-rw- 1 root root 195, 255 Mar  3 03:08 nvidiactl
+crw-rw-rw- 1 root root 511,   0 Aug  7 13:00 nvidia-uvm
+crw-rw-rw- 1 root root 511,   1 Aug  7 13:00 nvidia-uvm-tools
+crw-rw-rw- 1 root root 195,   0 Aug  7 13:00 nvidia0
+crw-rw-rw- 1 root root 195, 255 Aug  7 13:00 nvidiactl
 ```
 
 ```bash
