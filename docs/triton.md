@@ -32,3 +32,19 @@ docker pull nvcr.io/nvidia/tritonserver:25.07-vllm-python-py3
 pip install tritonclient[all]
 ```
 
+---
+
+## Docker
+
+### Run
+
+```bash
+docker run \
+-it \
+--name tritondev \
+--gpus 1 \
+-p 8000:8000 \
+nvcr.io/nvidia/tritonserver:25.07-py3 \
+bash
+```
+
