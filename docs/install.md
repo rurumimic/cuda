@@ -1,6 +1,7 @@
 # Install
 
 - cuda: [downloads](https://developer.nvidia.com/cuda-downloads)
+  - [12.9](https://developer.nvidia.com/cuda-12-9-0-download-archive)
 - docs
   - [NVIDIA CUDA Installation Guide for Linux](https://docs.nvidia.com/cuda/cuda-installation-guide-linux)
   - [container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)
@@ -30,7 +31,7 @@ compute_cap
 
 ## Ubuntu 24.04
 
-- CUDA Toolkit 12.8
+- CUDA Toolkit 13.0
 - ubuntu: [nvidia-drivers-installation](https://ubuntu.com/server/docs/nvidia-drivers-installation)
 
 ```bash
@@ -46,7 +47,7 @@ wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/
 sudo dpkg -i cuda-keyring_1.1-1_all.deb
 rm cuda-keyring_1.1-1_all.deb
 sudo apt-get update
-sudo apt-get -y install cuda-toolkit-12-8
+sudo apt-get -y install cuda-toolkit-13-0
 ```
 
 <details>
@@ -137,8 +138,8 @@ sudo apt-get -y install cuda-toolkit-12-8
 ```bash
 Install 73 Packages
 
- Total download size  3.7 GB
- Disk space required  8.6 GB
+ Total download size  3.3 GB
+ Disk space required  6.7 GB
 ```
 
 ### Driver Installer
@@ -156,8 +157,8 @@ sudo apt-get install -y nvidia-open
 ### Env
 
 ```bash
-export PATH=/usr/local/cuda-12.8/bin${PATH:+:${PATH}}
-export LD_LIBRARY_PATH=/usr/local/cuda-12.8/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 ```
 
 ### Container Toolkit
