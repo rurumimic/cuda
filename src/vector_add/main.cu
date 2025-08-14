@@ -1,10 +1,13 @@
-#include <cuda_runtime.h>
-#include <stdio.h>
-
 #include <string>
+#include <cstdio>
+#include <cstdlib>
+#include <cmath>
+#include <cuda_runtime.h>
 
 #define LENGTH 50000
 #define THREADS_PER_BLOCK 256
+
+constexpr double kEpsilon = 1e-5;
 
 void checkCudaError(cudaError_t err, const char *msg);
 void allocateDeviceMemory(float **d_ptr, size_t size, const char *name);
@@ -13,10 +16,10 @@ void copyToDevice(float *d_dst, const float *h_src, size_t size, const char *msg
 void copyToHost(float *h_dst, const float *d_src, size_t size, const char *msg);
 
 __global__ void vector_add(const float *a, const float *b, float *c, int length) {
-  int i = blockDim.x * blockIdx.x + threadIdx.x;
+  int i = (blockDim.x * blockIdx.x) + threadIdx.x;
 
   if (i < length) {
-    c[i] = a[i] + b[i] + 0.0f;
+    c[i] = a[i] + b[i] + 0.0F;
   }
 }
 
@@ -24,11 +27,11 @@ int main(int argc, char *argv[]) {
   size_t size = LENGTH * sizeof(float);
   printf("Vector length: %d\n", LENGTH);
 
-  float *h_a = (float *)malloc(size);
-  float *h_b = (float *)malloc(size);
-  float *h_c = (float *)malloc(size);
+  auto *h_a = (float *)malloc(size);
+  auto *h_b = (float *)malloc(size);
+  auto *h_c = (float *)malloc(size);
 
-  if (h_a == NULL || h_b == NULL || h_c == NULL) {
+  if (h_a == nullptr || h_b == nullptr || h_c == nullptr) {
     fprintf(stderr, "Failed to allocate host vectors\n");
     exit(EXIT_FAILURE);
   }
@@ -38,7 +41,9 @@ int main(int argc, char *argv[]) {
     h_b[i] = rand() / (float)RAND_MAX;
   }
 
-  float *d_a, *d_b, *d_c;
+  float *d_a;
+  float *d_b;
+  float *d_c;
   allocateDeviceMemory(&d_a, size, "d_a");
   allocateDeviceMemory(&d_b, size, "d_b");
   allocateDeviceMemory(&d_c, size, "d_c");
@@ -57,7 +62,7 @@ int main(int argc, char *argv[]) {
   copyToHost(h_c, d_c, size, "Failed to copy d_c to host");
 
   for (int i = 0; i < LENGTH; i++) {
-    if (fabs(h_a[i] + h_b[i] - h_c[i]) > 1e-5) {
+    if (fabs(h_a[i] + h_b[i] - h_c[i]) > kEpsilon) {
       fprintf(stderr, "Result verification failed at %d\n", i);
       exit(EXIT_FAILURE);
     }
@@ -86,7 +91,8 @@ void checkCudaError(cudaError_t err, const char *msg) {
 
 void allocateDeviceMemory(float **d_ptr, size_t size, const char *name) {
   cudaError_t err = cudaMalloc((void **)d_ptr, size);
-  checkCudaError(err, (std::string("Failed to allocate device memory for ") + name).c_str());
+  std::string msg = std::string("Failed to allocate device memory for ") + name;
+  checkCudaError(err, msg.c_str());
 }
 
 void freeDeviceMemory(void *d_ptr, const char *name) {

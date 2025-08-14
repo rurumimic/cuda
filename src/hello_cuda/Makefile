@@ -1,11 +1,12 @@
 NVCC = nvcc
+NVCCFLAGS = -std=c++17 -arch=sm_86
 FILES = main.cu
 TARGET = hello_cuda
 
 STYLE ?= Google
 
 $(TARGET): $(FILES)
-	$(NVCC) -o $@ $(FILES)
+	$(NVCC) $(NVCCFLAGS) -o $@ $(FILES)
 
 clean:
 	rm -f $(TARGET)

@@ -1,4 +1,5 @@
 NVCC = nvcc
+NVCCFLAGS = -std=c++17 -arch=sm_86
 CXX = clang++
 CXXFLAGS =
 TARGET = hello_cuda
@@ -14,7 +15,7 @@ main.o: main.cpp kernel.h
 	$(CXX) $(CXXFLAGS) -c main.cpp -o main.o -I/usr/local/cuda/include
 
 kernel.o: kernel.cu kernel.h
-	$(NVCC) -c kernel.cu -o kernel.o
+	$(NVCC) $(NVCCFLAGS) -c kernel.cu -o kernel.o
 
 clean:
 	rm -f hello_cuda main.o kernel.o

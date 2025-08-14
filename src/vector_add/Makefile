@@ -1,4 +1,5 @@
-CC = nvcc
+NVCC = nvcc
+NVCCFLAGS = -std=c++17 -arch=sm_86
 CFLAGS =
 FILES = main.cu
 TARGET = vector_add
@@ -6,7 +7,7 @@ TARGET = vector_add
 STYLE ?= Google
 
 $(TARGET): $(FILES)
-	$(CC) -o $@ $(CFLAGS) $(FILES)
+	$(NVCC) $(NVCCFLAGS) -o $@ $(CFLAGS) $(FILES)
 
 clean:
 	rm -f $(TARGET)
