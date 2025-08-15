@@ -4,7 +4,14 @@
 
 ```bash
 make
-nvcc -o vector_add  main.cu
+nvcc -o vector_add src/main.cu
+```
+
+```bash
+cmake -S . -B build -G Ninja \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel 12
 ```
 
 ## Run
