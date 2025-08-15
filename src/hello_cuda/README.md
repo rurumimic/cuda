@@ -4,7 +4,13 @@
 
 ```bash
 make
+# or
 nvcc -o hello_cuda main.cu
+# or
+cmake -S . -B build -G Ninja \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel 12
 ```
 
 ## Run

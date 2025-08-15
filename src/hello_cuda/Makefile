@@ -15,5 +15,4 @@ clang-format:
 	clang-format -style=$(STYLE) -dump-config > .clang-format
 
 format:
-	find . -iregex '.*\.\(h\|c\|cpp\|cu\)$$' | xargs clang-format -i
-
+	find src -type f \( -iname '*.h' -o -iname '*.c' -o -iname '*.cpp' -o -iname '*.cu' \) -print0 | xargs -0 clang-format -i

@@ -22,6 +22,10 @@ CompileFlags:
   Remove:
     - -stdlib=*
     - --target=*
+    - --generate-code=*
+    - -forward-unknown-to-host-compiler
+    - --extended-lambda
+    - -rdc=true
 
 Diagnostics:
   # Suppress:
