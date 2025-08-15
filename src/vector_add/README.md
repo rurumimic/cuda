@@ -1,17 +1,40 @@
 # Vector Add
 
-## Build
+## Build & Run
+
+recommend: justfile + cmake + ninja
+
+### Just
+
+```bash
+just
+./build/debug/vector_add
+```
+
+### Make
 
 ```bash
 make
+# or
 nvcc -o vector_add src/main.cu
 ```
+
+```bash
+./vector_add
+```
+
+### CMake
+
 
 ```bash
 cmake -S . -B build -G Ninja \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
   -DCMAKE_BUILD_TYPE=Release
 cmake --build build --parallel 12
+```
+
+```bash
+./build/vector_add
 ```
 
 ## Run

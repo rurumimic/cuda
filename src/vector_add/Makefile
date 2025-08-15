@@ -17,4 +17,3 @@ clang-format:
 
 format:
 	find src -type f \( -iname '*.h' -o -iname '*.c' -o -iname '*.cpp' -o -iname '*.cu' \) -print0 | xargs -0 clang-format -i
-

@@ -1,8 +1,9 @@
-#include <string>
+#include <cuda_runtime.h>
+
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
-#include <cmath>
-#include <cuda_runtime.h>
+#include <string>
 
 #define LENGTH 50000
 #define THREADS_PER_BLOCK 256
@@ -10,6 +11,7 @@
 constexpr double kEpsilon = 1e-5;
 
 void checkCudaError(cudaError_t err, const char *msg);
+void checkDeviceMemory();
 void allocateDeviceMemory(float **d_ptr, size_t size, const char *name);
 void freeDeviceMemory(void *d_ptr, const char *name);
 void copyToDevice(float *d_dst, const float *h_src, size_t size, const char *msg);
@@ -87,6 +89,15 @@ void checkCudaError(cudaError_t err, const char *msg) {
     fprintf(stderr, "%s: %s\n", msg, cudaGetErrorString(err));
     exit(EXIT_FAILURE);
   }
+}
+
+void checkDeviceMemory() {
+  size_t free;
+  size_t total;
+
+  cudaMemGetInfo(&free, &total);
+
+  printf("Device memory (free/total) = %zu/%zu bytes\n", free, total);
 }
 
 void allocateDeviceMemory(float **d_ptr, size_t size, const char *name) {
