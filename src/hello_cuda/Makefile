@@ -1,6 +1,6 @@
 NVCC = nvcc
 NVCCFLAGS = -std=c++17 -arch=sm_86
-FILES = main.cu
+FILES = src/main.cu
 TARGET = hello_cuda
 
 STYLE ?= Google
