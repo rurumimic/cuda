@@ -14,7 +14,6 @@
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "TARGET_GROUP": "debug",
                 "ENABLE_FORMAT": "ON"
             }
         }

@@ -9,6 +9,10 @@ clean:
     @echo "[Just] Clean build directory"
     rm -rf build
 
+run:
+    @echo "[Just] Run the application"
+    ./build/debug/vector_add
+
 # Build targets
 
 # build execution

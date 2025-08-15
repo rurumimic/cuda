@@ -8,6 +8,11 @@ recommend: justfile + cmake + ninja
 
 ```bash
 just
+```
+
+```bash
+just run
+# or
 ./build/debug/vector_add
 ```
 
