@@ -1,11 +1,12 @@
 #include <cuda_runtime.h>
 
+#include <chrono>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <string>
 
-#define LENGTH 50000
+#define LENGTH 500000
 #define THREADS_PER_BLOCK 256
 
 constexpr double kEpsilon = 1e-5;
@@ -29,12 +30,14 @@ __global__ void vector_add(const float *a, const float *b, float *c, int length)
 int main(int argc, char *argv[]) {
   size_t size = LENGTH * sizeof(float);
   printf("Vector length: %d\n", LENGTH);
+  printf("\n");
 
   printf("Allocate Host memory\n");
   auto *h_a = (float *)malloc(size);
   auto *h_b = (float *)malloc(size);
   auto *h_c = (float *)malloc(size);
-  if (h_a == nullptr || h_b == nullptr || h_c == nullptr) {
+  auto *h_hc = (float *)malloc(size);
+  if (h_a == nullptr || h_b == nullptr || h_c == nullptr || h_hc == nullptr) {
     fprintf(stderr, "Failed to allocate host vectors\n");
     exit(EXIT_FAILURE);
   }
@@ -44,6 +47,17 @@ int main(int argc, char *argv[]) {
     h_a[i] = rand() / (float)RAND_MAX;
     h_b[i] = rand() / (float)RAND_MAX;
   }
+  printf("\n");
+
+  printf("Vector add on Host\n");
+  auto start = std::chrono::steady_clock::now();
+  for (int i = 0; i < LENGTH; i++) {
+    h_hc[i] = h_a[i] + h_b[i];
+  }
+  auto end = std::chrono::steady_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+  printf("Host vector add duration: %ld µs\n", duration.count());
+  printf("\n");
 
   displayDeviceMemory();
 
@@ -59,24 +73,39 @@ int main(int argc, char *argv[]) {
   cleanDeviceMemory(d_a, size, "d_a");
   cleanDeviceMemory(d_b, size, "d_b");
   cleanDeviceMemory(d_c, size, "d_c");
+  printf("\n");
 
   displayDeviceMemory();
 
   printf("Copy: Host to Device\n");
+  start = std::chrono::steady_clock::now();
   copyToDevice(d_a, h_a, size, "Failed to copy h_a to Device");
   copyToDevice(d_b, h_b, size, "Failed to copy h_b to Device");
-
+  end = std::chrono::steady_clock::now();
+  duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+  printf("Copy duration: %ld µs\n", duration.count());
   printf("\n");
 
   int blocksPerGrid = (LENGTH + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
   printf("CUDA kernel: %d blocks x %d threads\n", blocksPerGrid, THREADS_PER_BLOCK);
 
   printf("Launch vector_add kernel\n");
+  start = std::chrono::steady_clock::now();
   vector_add<<<blocksPerGrid, THREADS_PER_BLOCK>>>(d_a, d_b, d_c, LENGTH);
+  cudaDeviceSynchronize();
+  end = std::chrono::steady_clock::now();
+  duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
   checkCudaError(cudaGetLastError(), "Failed to launch kernel");
+  printf("Kernel execution duration: %ld µs\n", duration.count());
+  printf("\n");
 
   printf("Copy: Device to Host\n");
+  start = std::chrono::steady_clock::now();
   copyToHost(h_c, d_c, size, "Failed to copy d_c to Host");
+  end = std::chrono::steady_clock::now();
+  duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+  printf("Copy duration: %ld µs\n", duration.count());
+  printf("\n");
 
   printf("Verify results\n");
   for (int i = 0; i < LENGTH; i++) {
@@ -94,6 +123,7 @@ int main(int argc, char *argv[]) {
   freeDeviceMemory(d_a, "d_a");
   freeDeviceMemory(d_b, "d_b");
   freeDeviceMemory(d_c, "d_c");
+  printf("\n");
 
   displayDeviceMemory();
 

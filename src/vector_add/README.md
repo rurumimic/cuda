@@ -53,7 +53,7 @@ cmake --build build --parallel 12
 #### Vector Length
 
 ```bash
-Vector length: 50000
+Vector length: 500000
 ```
 
 #### Init Vectors on Host
@@ -63,18 +63,25 @@ Allocate Host memory
 Initialize Host vectors
 ```
 
+#### Vector Add on Host
+
+```bash
+Vector add on Host
+Host vector add duration: 1446 µs
+```
+
 #### Init Device Memory
 
 ```bash
 -----Device memory-----
-free:  7077756928 bytes
+free:  7034699776 bytes
 total: 8197111808 bytes
 
 Allocate Device memory
 Cleaning Device memory
 
 -----Device memory-----
-free:  7075659776 bytes
+free:  7028408320 bytes
 total: 8197111808 bytes
 ```
 
@@ -82,19 +89,22 @@ total: 8197111808 bytes
 
 ```bash
 Copy: Host to Device
+Copy duration: 406 µs
 ```
 
 #### Launch Kernel
 
 ```bash
-CUDA kernel: 196 blocks x 256 threads
+CUDA kernel: 1954 blocks x 256 threads
 Launch vector_add kernel
+Kernel execution duration: 78 µs
 ```
 
 #### Copy Data from Device to Host
 
 ```bash
 Copy: Device to Host
+Copy duration: 1092 µs
 ```
 
 #### Verify Results
@@ -108,13 +118,13 @@ Result verification: OK
 
 ```bash
 -----Device memory-----
-free:  7075659776 bytes
+free:  7028408320 bytes
 total: 8197111808 bytes
 
 Free Device memory
 
 -----Device memory-----
-free:  7077756928 bytes
+free:  7034699776 bytes
 total: 8197111808 bytes
 ```
 
