@@ -11,7 +11,7 @@
 constexpr double kEpsilon = 1e-5;
 
 void checkCudaError(cudaError_t err, const char *msg);
-void checkDeviceMemory();
+void displayDeviceMemory();
 void allocateDeviceMemory(float **d_ptr, size_t size, const char *name);
 void freeDeviceMemory(void *d_ptr, const char *name);
 void cleanDeviceMemory(void *d_ptr, size_t size, const char *name);
@@ -30,25 +30,24 @@ int main(int argc, char *argv[]) {
   size_t size = LENGTH * sizeof(float);
   printf("Vector length: %d\n", LENGTH);
 
-  printf("Allocate host memory\n");
+  printf("Allocate Host memory\n");
   auto *h_a = (float *)malloc(size);
   auto *h_b = (float *)malloc(size);
   auto *h_c = (float *)malloc(size);
-
   if (h_a == nullptr || h_b == nullptr || h_c == nullptr) {
     fprintf(stderr, "Failed to allocate host vectors\n");
     exit(EXIT_FAILURE);
   }
 
-  printf("Initialize host vectors\n");
+  printf("Initialize Host vectors\n");
   for (int i = 0; i < LENGTH; i++) {
     h_a[i] = rand() / (float)RAND_MAX;
     h_b[i] = rand() / (float)RAND_MAX;
   }
 
-  checkDeviceMemory();
-  printf("Allocate device memory\n");
+  displayDeviceMemory();
 
+  printf("Allocate Device memory\n");
   float *d_a;
   float *d_b;
   float *d_c;
@@ -56,12 +55,16 @@ int main(int argc, char *argv[]) {
   allocateDeviceMemory(&d_b, size, "d_b");
   allocateDeviceMemory(&d_c, size, "d_c");
 
-  checkDeviceMemory();
+  printf("Cleaning Device memory\n");
+  cleanDeviceMemory(d_a, size, "d_a");
+  cleanDeviceMemory(d_b, size, "d_b");
+  cleanDeviceMemory(d_c, size, "d_c");
 
-  printf("Copy: host to device\n");
+  displayDeviceMemory();
 
-  copyToDevice(d_a, h_a, size, "Failed to copy h_a to device");
-  copyToDevice(d_b, h_b, size, "Failed to copy h_b to device");
+  printf("Copy: Host to Device\n");
+  copyToDevice(d_a, h_a, size, "Failed to copy h_a to Device");
+  copyToDevice(d_b, h_b, size, "Failed to copy h_b to Device");
 
   printf("\n");
 
@@ -72,8 +75,8 @@ int main(int argc, char *argv[]) {
   vector_add<<<blocksPerGrid, THREADS_PER_BLOCK>>>(d_a, d_b, d_c, LENGTH);
   checkCudaError(cudaGetLastError(), "Failed to launch kernel");
 
-  printf("Copy: device to host\n");
-  copyToHost(h_c, d_c, size, "Failed to copy d_c to host");
+  printf("Copy: Device to Host\n");
+  copyToHost(h_c, d_c, size, "Failed to copy d_c to Host");
 
   printf("Verify results\n");
   for (int i = 0; i < LENGTH; i++) {
@@ -82,31 +85,24 @@ int main(int argc, char *argv[]) {
       exit(EXIT_FAILURE);
     }
   }
-
   printf("Result verification: OK\n");
   printf("\n");
 
-  printf("Cleaning device memory\n");
-  cleanDeviceMemory(d_a, size, "d_a");
-  cleanDeviceMemory(d_b, size, "d_b");
-  cleanDeviceMemory(d_c, size, "d_c");
+  displayDeviceMemory();
 
-  checkDeviceMemory();
-
-  printf("Free device memory\n");
-
+  printf("Free Device memory\n");
   freeDeviceMemory(d_a, "d_a");
   freeDeviceMemory(d_b, "d_b");
   freeDeviceMemory(d_c, "d_c");
 
-  checkDeviceMemory();
+  displayDeviceMemory();
 
+  printf("Free Host memory\n");
   free(h_a);
   free(h_b);
   free(h_c);
 
-  printf("Program completed successfully.\n");
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 void checkCudaError(cudaError_t err, const char *msg) {
@@ -116,7 +112,7 @@ void checkCudaError(cudaError_t err, const char *msg) {
   }
 }
 
-void checkDeviceMemory() {
+void displayDeviceMemory() {
   size_t free;
   size_t total;
 
