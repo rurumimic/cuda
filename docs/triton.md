@@ -30,6 +30,7 @@ docker pull nvcr.io/nvidia/tritonserver:25.07-vllm-python-py3
 
 ```bash
 pip install tritonclient[all]
+pip install tokenizers
 ```
 
 ---

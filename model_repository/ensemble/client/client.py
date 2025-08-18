@@ -10,7 +10,7 @@ import argparse
 
 host = "localhost"
 port = 8000
-model_name = "nomic-embed-text-v1.5"
+model_name = "ensemble"
 
 def load_tokenizer(path, max_length=256):
     tokenizer = Tokenizer.from_file(path)
@@ -33,9 +33,6 @@ def main():
     args = argparse.ArgumentParser()
     args.add_argument("--host", type=str, default=host)
     args.add_argument("--port", type=int, default=port)
-    args.add_argument("--model-repository", type=str, default="model_repository")
-    args.add_argument("--model-name", type=str)
-    args.add_argument("--model-version", type=int, default=1)
     args.add_argument("--tokenizer-path", type=str, default="tokenizer.json")
     args.add_argument("--texts", nargs="+", default=["Hello, world!", "This is a test."])
     args.add_argument("--max-length", type=int, default=256)
@@ -50,25 +47,11 @@ def main():
         print(f"context creation failed: {e}")
         return
 
-    model_repository = args.model_repository
-    model_name = args.model_name
-    model_version = args.model_version
     tokenizer_path = args.tokenizer_path
     max_length = args.max_length
     texts = args.texts
 
-    if args.load_model:
-        client.load_model(model_name)
-        if not client.is_model_ready(model_name):
-            print(f"Model {model_name} is not ready.")
-            return
-
-
-    model_path = Path(model_repository, model_name, str(model_version), model_name, "onnx", "model.onnx")
-    if not model_path.exists():
-        print(f"Model file {model_path} does not exist.")
-        return
-    tokenizer_path = Path(model_repository, model_name, str(model_version), model_name, tokenizer_path)
+    tokenizer_path = Path("model_repository/nomic-embed-text-v1.5/1/nomic-embed-text-v1.5", tokenizer_path)
     if not tokenizer_path.exists():
         print(f"Tokenizer file {tokenizer_path} does not exist.")
         return
@@ -92,7 +75,6 @@ def main():
 
     resp = result.get_response()
 
-    print(f"Model: {model_name}, Version: {model_version}")
     print(f"input_ids: {input_ids.shape}")
     print(f"attention_mask: {attention_mask.shape}")
     print(f"token_type_ids: {token_type_ids.shape}")
