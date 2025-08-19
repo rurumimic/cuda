@@ -14,7 +14,8 @@
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "ENABLE_FORMAT": "ON"
+                "ENABLE_FORMAT": "ON",
+                "ENABLE_CUDA_DEBUG": "ON"
             }
         }
     ],
