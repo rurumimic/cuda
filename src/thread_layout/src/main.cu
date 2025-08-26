@@ -27,7 +27,7 @@
 #define GRID_3D_TID ((NUM_THREADS_IN_BLOCK * GDIM_X * GDIM_Y * BID_Z) + GRID_2D_TID)
 
 #define BLOCK_ID_LINEAR (BID_X + GDIM_X * (BID_Y + GDIM_Y * BID_Z))
-#define GLOBAL_TID (TID_IN_BLOCK + BLOCK_ID_LINEAR * NUM_THREADS_IN_BLOCK)
+#define GLOBAL_TID (TID_IN_BLOCK + (BLOCK_ID_LINEAR * NUM_THREADS_IN_BLOCK))
 
 __device__ __forceinline__ unsigned long long tid_in_block_u64() {
   const auto tx = static_cast<unsigned long long>(threadIdx.x);
