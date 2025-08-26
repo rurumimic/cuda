@@ -131,6 +131,7 @@ int main(int argc, char *argv[]) {
   free(h_a);
   free(h_b);
   free(h_c);
+  free(h_hc);
 
   return EXIT_SUCCESS;
 }
