@@ -17,7 +17,7 @@ if(ENABLE_FORMAT)
             format
             COMMAND bash -c "find ${CMAKE_SOURCE_DIR}/src \
             -type d \\( -name build -o -name .git -o -name .cache \\) -prune -false -o \
-            \\( -name \"*.h\" -o -name \"*.c\" -o -name \"*.cpp\" -o -name \"*.cu\" \\) -print0 \
+            \\( -name \"*.h\" -o -name \"*.cuh\" -o -name \"*.c\" -o -name \"*.cpp\" -o -name \"*.cu\" \\) -print0 \
             | xargs -0 -r ${CLANG_FORMAT} -i"
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
             COMMENT "Formatting source files with clang-format"

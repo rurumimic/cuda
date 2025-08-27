@@ -3,31 +3,11 @@
 #include <cstdio>
 #include <cstdlib>
 
-#define TID_X threadIdx.x
-#define TID_Y threadIdx.y
-#define TID_Z threadIdx.z
-
-#define BID_X blockIdx.x
-#define BID_Y blockIdx.y
-#define BID_Z blockIdx.z
-
-#define GDIM_X gridDim.x
-#define GDIM_Y gridDim.y
-#define GDIM_Z gridDim.z
-
-#define BDIM_X blockDim.x
-#define BDIM_Y blockDim.y
-#define BDIM_Z blockDim.z
-
-#define TID_IN_BLOCK (TID_Z * (BDIM_Y * BDIM_X) + TID_Y * BDIM_X + TID_X)
-#define NUM_THREADS_IN_BLOCK (BDIM_X * BDIM_Y * BDIM_Z)
+#include "index.cuh"
 
 #define GRID_1D_TID ((NUM_THREADS_IN_BLOCK * BID_X) + TID_IN_BLOCK)
 #define GRID_2D_TID ((NUM_THREADS_IN_BLOCK * GDIM_X * BID_Y) + GRID_1D_TID)
 #define GRID_3D_TID ((NUM_THREADS_IN_BLOCK * GDIM_X * GDIM_Y * BID_Z) + GRID_2D_TID)
-
-#define BLOCK_ID_LINEAR (BID_X + GDIM_X * (BID_Y + GDIM_Y * BID_Z))
-#define GLOBAL_TID (TID_IN_BLOCK + (BLOCK_ID_LINEAR * NUM_THREADS_IN_BLOCK))
 
 __device__ __forceinline__ unsigned long long tid_in_block_u64() {
   const auto tx = static_cast<unsigned long long>(threadIdx.x);
@@ -62,51 +42,37 @@ __device__ __forceinline__ unsigned long long block_id_linear_u64() {
 
 __device__ __forceinline__ unsigned long long global_tid_u64() {
   const auto tpb = threads_per_block_u64();
-  const auto b   = block_id_linear_u64();
+  const auto b = block_id_linear_u64();
   const auto tin = tid_in_block_u64();
   // GLOBAL_TID = tin + b * tpb
   return (tin + (b * tpb));
 }
 
 // overflow is possible
-__device__ __forceinline__ unsigned int global_tid_u32() {
-  return static_cast<unsigned int>(global_tid_u64());
-}
+__device__ __forceinline__ unsigned int global_tid_u32() { return static_cast<unsigned int>(global_tid_u64()); }
 
 __global__ void displayIndex1() {
-  printf("Thread ID: (%d, %d, %d), Block ID: (%d, %d, %d), Block Dim: (%d, %d, %d), Grid Dim: (%d, %d, %d)\n",
-         threadIdx.x, threadIdx.y, threadIdx.z,
-         blockIdx.x, blockIdx.y, blockIdx.z,
-         blockDim.x, blockDim.y, blockDim.z,
-         gridDim.x, gridDim.y, gridDim.z);
+  printf("Thread ID: (%d, %d, %d), Block ID: (%d, %d, %d), Block Dim: (%d, %d, %d), Grid Dim: (%d, %d, %d)\n", threadIdx.x, threadIdx.y,
+         threadIdx.z, blockIdx.x, blockIdx.y, blockIdx.z, blockDim.x, blockDim.y, blockDim.z, gridDim.x, gridDim.y, gridDim.z);
 }
 
 __global__ void displayIndex2() {
-  printf("Thread ID: (%d, %d, %d), Block ID: (%d, %d, %d), Block Dim: (%d, %d, %d), Grid Dim: (%d, %d, %d)\n",
-         TID_X, TID_Y, TID_Z,
-         BID_X, BID_Y, BID_Z,
-         BDIM_X, BDIM_Y, BDIM_Z,
-         GDIM_X, GDIM_Y, GDIM_Z);
+  printf("Thread ID: (%d, %d, %d), Block ID: (%d, %d, %d), Block Dim: (%d, %d, %d), Grid Dim: (%d, %d, %d)\n", TID_X, TID_Y, TID_Z, BID_X,
+         BID_Y, BID_Z, BDIM_X, BDIM_Y, BDIM_Z, GDIM_X, GDIM_Y, GDIM_Z);
 }
 
 __global__ void displayIndex() {
   const unsigned long long gid = global_tid_u64();
 
-  printf("GID: %3lld, Thread ID: (%d, %d, %d), Block ID: (%d, %d, %d), Block Dim: (%d, %d, %d), Grid Dim: (%d, %d, %d)\n",
-         gid,
-         TID_X, TID_Y, TID_Z,
-         BID_X, BID_Y, BID_Z,
-         BDIM_X, BDIM_Y, BDIM_Z,
-         GDIM_X, GDIM_Y, GDIM_Z);
+  printf("GID: %3lld, Thread ID: (%d, %d, %d), Block ID: (%d, %d, %d), Block Dim: (%d, %d, %d), Grid Dim: (%d, %d, %d)\n", gid, TID_X,
+         TID_Y, TID_Z, BID_X, BID_Y, BID_Z, BDIM_X, BDIM_Y, BDIM_Z, GDIM_X, GDIM_Y, GDIM_Z);
 }
 
 void example1() {
-  dim3 dimBlock(3, 1, 1); // dim3 dimBlock(3);
-  dim3 dimGrid(2, 1, 1); // dim3 dimGrid(2);
+  dim3 dimBlock(3, 1, 1);  // dim3 dimBlock(3);
+  dim3 dimGrid(2, 1, 1);   // dim3 dimGrid(2);
 
-  printf("dimGrid: (%d, %d, %d), dimBlock: (%d, %d, %d)\n",
-         dimGrid.x, dimGrid.y, dimGrid.z,
-         dimBlock.x, dimBlock.y, dimBlock.z);
+  printf("dimGrid: (%d, %d, %d), dimBlock: (%d, %d, %d)\n", dimGrid.x, dimGrid.y, dimGrid.z, dimBlock.x, dimBlock.y, dimBlock.z);
 
   displayIndex<<<dimGrid, dimBlock>>>();
   cudaDeviceSynchronize();
@@ -116,14 +82,11 @@ void example2() {
   dim3 dimBlock(3, 2, 1);
   dim3 dimGrid(2, 4, 1);
 
-  printf("dimGrid: (%d, %d, %d), dimBlock: (%d, %d, %d)\n",
-         dimGrid.x, dimGrid.y, dimGrid.z,
-         dimBlock.x, dimBlock.y, dimBlock.z);
+  printf("dimGrid: (%d, %d, %d), dimBlock: (%d, %d, %d)\n", dimGrid.x, dimGrid.y, dimGrid.z, dimBlock.x, dimBlock.y, dimBlock.z);
 
   displayIndex<<<dimGrid, dimBlock>>>();
   cudaDeviceSynchronize();
 }
-
 
 int main(int argc, char *argv[]) {
   printf("CUDA Kernel Launch Example\n");
@@ -135,5 +98,3 @@ int main(int argc, char *argv[]) {
 
   return EXIT_SUCCESS;
 }
-
-
