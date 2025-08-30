@@ -75,12 +75,16 @@ counted 107310 instances of 'x', 'y', 'z', or 'w' in "./warandpeace.txt"
   - [triton](docs/triton.md)
   - [libnvidia-container](docs/libnvidia.container.md)
   - [dynamo](docs/dynamo.md)
-  - [tensorRT](docs/tensorrt.md)
+  - [tensorRT](docs/tensorrt.md), src/[tensorrt](src/tensorrt/README.md)
 
 ---
 
 ## Code
 
 - Hello CUDA: [hello_cuda](src/hello_cuda/README.md), [hello_cuda with C++](src/hello_cuda_cpp/README.md)
+- Thread: [thread_layout](src/thread_layout/README.md)
+- Device: [device_query](src/device_query/README.md)
 - Vector: [vector_add](src/vector_add/README.md)
+- Matrix: [matrix_add](src/matrix_add/README.md), [matrix_add_large](src/matrix_add_large/README.md)
+- TensorRT: [tensorrt](src/tensorrt/README.md)
 
