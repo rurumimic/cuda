@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include <string>
 
-#include "index.cuh"
+// #include "index.cuh"
 
 /* C = A * B
  * C = [M x N]
@@ -17,7 +17,8 @@
 #define SIZE_M (512 * 2)
 #define SIZE_N (512 * 4)
 #define SIZE_K (512 * 2)
-#define THREADS_PER_BLOCK 1024
+
+// constexpr double kEpsilon = 1e-5;
 
 void checkCudaError(cudaError_t err, const char *msg);
 void displayDeviceMemory();
@@ -36,11 +37,13 @@ __global__ void matrix_mul(const float *a, const float *b, float *c, int size_m,
     return;
   }
 
-  c[i] = 0.0F;
-
+  float acc = 0.0F;
   for (int k = 0; k < size_k; k++) {
-    c[i] += (a[(row * size_k) + k] * b[(size_n * k) + col]);
+    // acc += (a[(row * size_k) + k] * b[(size_n * k) + col]);
+    // or
+    acc = fmaf(a[(row * size_k) + k], b[(size_n * k) + col], acc);
   }
+  c[i] = acc;
 }
 
 int main(int argc, char *argv[]) {
@@ -78,10 +81,12 @@ int main(int argc, char *argv[]) {
   for (int x = 0; x < SIZE_N; x++) {
     for (int y = 0; y < SIZE_M; y++) {
       unsigned int i = (y * SIZE_N) + x;
-      h_hc[i] = 0.0F;
+      float acc = 0.0F;
       for (int k = 0; k < SIZE_K; k++) {
-        h_hc[i] += (h_a[(y * SIZE_K) + k] * h_b[(SIZE_N * k) + x]);
+        // h_hc[i] += (h_a[(y * SIZE_K) + k] * h_b[(SIZE_N * k) + x]);
+        acc = fmaf(h_a[(y * SIZE_K) + k], h_b[(SIZE_N * k) + x], acc);
       }
+      h_hc[i] = acc;
     }
   }
   auto end = std::chrono::steady_clock::now();
@@ -89,7 +94,7 @@ int main(int argc, char *argv[]) {
   printf("Host matrix mul duration: %ld s\n", secs.count());
   printf("\n");
 
-  displayDeviceMemory();
+  // displayDeviceMemory();
 
   printf("Allocate Device memory\n");
   float *d_a;
@@ -99,13 +104,13 @@ int main(int argc, char *argv[]) {
   allocateDeviceMemory(&d_b, size_b, "d_b");
   allocateDeviceMemory(&d_c, size_c, "d_c");
 
-  printf("Cleaning Device memory\n");
-  cleanDeviceMemory(d_a, size_a, "d_a");
-  cleanDeviceMemory(d_b, size_b, "d_b");
-  cleanDeviceMemory(d_c, size_c, "d_c");
-  printf("\n");
+  // printf("Cleaning Device memory\n");
+  // cleanDeviceMemory(d_a, size_a, "d_a");
+  // cleanDeviceMemory(d_b, size_b, "d_b");
+  // cleanDeviceMemory(d_c, size_c, "d_c");
+  // printf("\n");
 
-  displayDeviceMemory();
+  // displayDeviceMemory();
 
   printf("Copy: Host to Device\n");
   start = std::chrono::steady_clock::now();
@@ -117,7 +122,8 @@ int main(int argc, char *argv[]) {
   printf("\n");
 
   dim3 blockDim(32, 32);
-  dim3 gridDim((ceil((float)SIZE_N / blockDim.x)), (ceil((float)SIZE_M / blockDim.y)));
+  dim3 gridDim((SIZE_N + blockDim.x - 1) / blockDim.x,
+               (SIZE_M + blockDim.y - 1) / blockDim.y);
   printf("Block Dim: (%d, %d, %d)\n", blockDim.x, blockDim.y, blockDim.z);
   printf("Grid Dim: (%d, %d, %d)\n", gridDim.x, gridDim.y, gridDim.z);
 
@@ -141,6 +147,7 @@ int main(int argc, char *argv[]) {
 
   printf("Verify results\n");
   for (int i = 0; i < SIZE_M * SIZE_N; i++) {
+    // if (fabs(h_hc[i] - h_c[i]) > kEpsilon) {
     if (h_hc[i] != h_c[i]) {
       printf("h_hc[%d] = %f, h_c[%d] = %f\n", i, h_hc[i], i, h_c[i]);
       fprintf(stderr, "Result verification failed at %d\n", i);
@@ -150,7 +157,7 @@ int main(int argc, char *argv[]) {
   printf("Result verification: OK\n");
   printf("\n");
 
-  displayDeviceMemory();
+  // displayDeviceMemory();
 
   printf("Free Device memory\n");
   freeDeviceMemory(d_a, "d_a");
@@ -158,7 +165,7 @@ int main(int argc, char *argv[]) {
   freeDeviceMemory(d_c, "d_c");
   printf("\n");
 
-  displayDeviceMemory();
+  // displayDeviceMemory();
 
   printf("Free Host memory\n");
   free(h_a);
