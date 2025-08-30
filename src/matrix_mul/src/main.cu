@@ -17,6 +17,7 @@
 #define SIZE_M (512 * 2)
 #define SIZE_N (512 * 4)
 #define SIZE_K (512 * 2)
+#define BLOCK_SIZE 16
 
 // constexpr double kEpsilon = 1e-5;
 
@@ -121,7 +122,7 @@ int main(int argc, char *argv[]) {
   printf("Copy duration: %ld µs\n", duration.count());
   printf("\n");
 
-  dim3 blockDim(32, 32);
+  dim3 blockDim(BLOCK_SIZE, BLOCK_SIZE, 1);
   dim3 gridDim((SIZE_N + blockDim.x - 1) / blockDim.x,
                (SIZE_M + blockDim.y - 1) / blockDim.y);
   printf("Block Dim: (%d, %d, %d)\n", blockDim.x, blockDim.y, blockDim.z);

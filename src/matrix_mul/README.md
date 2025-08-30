@@ -27,15 +27,15 @@ Host matrix mul duration: 8 s
 
 Allocate Device memory
 Copy: Host to Device
-Copy duration: 1287 µs
+Copy duration: 1109 µs
 
-Block Dim: (32, 32, 1)
-Grid Dim: (64, 32, 1)
+Block Dim: (16, 16, 1)
+Grid Dim: (128, 64, 1)
 Launch matrix_mul kernel
-Kernel execution duration: 47 ms
+Kernel execution duration: 36 ms
 
 Copy: Device to Host
-Copy duration: 4535 µs
+Copy duration: 4247 µs
 
 Verify results
 Result verification: OK
