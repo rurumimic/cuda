@@ -30,7 +30,7 @@ __global__ void matrix_add(const float *a, const float *b, float *c, int length)
 
   if (i < length) {
     c[i] = a[i] + b[i] + 0.0F;
-    printf("GID %4u=%4d (%2d, %2d) | %f = %f + %f\n", GLOBAL_TID, i, row, col, c[i], a[i], b[i]);
+    // printf("GID %4u=%4d (%2d, %2d) | %f = %f + %f\n", GLOBAL_TID, i, row, col, c[i], a[i], b[i]);
   }
 }
 
@@ -96,9 +96,8 @@ int main(int argc, char *argv[]) {
   printf("Copy duration: %ld µs\n", duration.count());
   printf("\n");
 
-  int blocksPerGrid = (AREA + THREADS_PER_BLOCK - 1) / THREADS_PER_BLOCK;
   dim3 blockDim(COL, ROW);
-  printf("CUDA kernel: %d blocks x %d threads\n", blocksPerGrid, THREADS_PER_BLOCK);
+  printf("Block Dim: (%d, %d, %d)\n", blockDim.x, blockDim.y, blockDim.z);
 
   printf("Launch matrix_add kernel\n");
   start = std::chrono::steady_clock::now();
