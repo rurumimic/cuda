@@ -85,6 +85,8 @@ counted 107310 instances of 'x', 'y', 'z', or 'w' in "./warandpeace.txt"
 - Thread: [thread_layout](src/thread_layout/README.md)
 - Device: [device_query](src/device_query/README.md)
 - Vector: [vector_add](src/vector_add/README.md)
-- Matrix: [matrix_add](src/matrix_add/README.md), [matrix_add_large](src/matrix_add_large/README.md)
+- Matrix
+  - add: [matrix_add](src/matrix_add/README.md), [matrix_add_large](src/matrix_add_large/README.md)
+  - mul: [matrix_mul](src/matrix_mul/README.md)
 - TensorRT: [tensorrt](src/tensorrt/README.md)
 

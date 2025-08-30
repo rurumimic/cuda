@@ -1,0 +1,35 @@
+verbose := if env("VERBOSE", "") == "" { "" } else { "--verbose" }
+
+# = debug
+default:
+    just debug
+
+# clean target
+clean:
+    @echo "[Just] Clean build directory"
+    rm -rf build
+
+run:
+    @echo "[Just] Run the application"
+    ./build/debug/matrix_mul
+
+# Build targets
+
+# build execution
+debug:
+    @echo "[Just] Build in debug mode"
+    cmake --preset configure-debug
+    cmake --build --preset build-debug {{verbose}}
+
+# Format targets
+
+# format code with clang-format
+format:
+    @echo "[Just] Run clang-format"
+    cmake --build --preset build-debug --target format
+
+# generate .clang-format file
+clang-format:
+    @echo "[Just] Generate .clang-format file"
+    cmake --preset configure-debug
+    cmake --build --preset build-debug --target clang-format
