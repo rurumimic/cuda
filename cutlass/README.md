@@ -87,5 +87,37 @@ cmake --build build --parallel 12
 
 #### .clangd
 
-- cutlass [.clangd](.clangd)
+- global [~/.config/clangd/config.yaml](config.yaml)
+- local [.clangd](.clangd)
+
+---
+
+## Run
+
+### cutlass_profiler
+
+```bash
+./build/tools/profiler/cutlass_profiler --version
+./build/tools/profiler/cutlass_profiler --help
+```
+
+#### Examples
+
+GEMM:
+
+```bash
+./build/tools/profiler/cutlass_profiler --kernels=sgemm --m=4352 --n=4096 --k=4096
+```
+
+convolution:
+
+```bash
+./build/tools/profiler/cutlass_profiler --kernels=s1688fprop --n=8 --h=224 --w=224 --c=128 --k=128 --r=3 --s=3 --pad_h=1 --pad_w=1
+```
+
+2-D convolution operators:
+
+```bash
+./build/tools/profiler/cutlass_profiler --operation=conv2d --n=8 --h=224 --w=224 --c=128 --k=128 --r=3 --s=3
+```
 

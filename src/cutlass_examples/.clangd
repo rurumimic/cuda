@@ -1,0 +1,56 @@
+CompileFlags:
+  Add:
+    # nvidia-smi --query-gpu=compute_cap --format=csv,noheader,nounits
+    - -xcuda
+    - -std=c++17
+    - --cuda-gpu-arch=sm_86
+    - --cuda-path=/usr/local/cuda
+    # - --cuda-host-only
+
+    # cuda_runtime.h
+    - -I/usr/local/cuda/include
+    - -I/usr/local/cuda/targets/x86_64-linux/include
+
+    - -fno-strict-aliasing
+    # - -fPIC
+    - -pthread
+
+    # - -D__CUDACC__
+    # - -D__CUDA_ARCH__=860
+    # - -DCUDA_VERSION=13000
+
+  Remove:
+    - -stdlib=*
+    - --target=*
+    - --generate-code=*
+    - -forward-unknown-to-host-compiler
+    - --extended-lambda
+    - -rdc=true
+
+Diagnostics:
+  # Suppress:
+    # - unused-parameter
+    # - unknown-cuda-version
+    # - cuda-compat
+    # - unused-variable
+  ClangTidy:
+    Add:
+      - readability-*
+      - performance-*
+      - modernize-*
+    Remove:
+      - modernize-use-trailing-return-type
+      - readability-identifier-length
+
+Index:
+  Background: Build
+  StandardLibrary: Yes
+
+InlayHints:
+  Enabled: Yes
+  ParameterNames: Yes
+  DeducedTypes: Yes
+
+Hover:
+  ShowAKA: Yes
+
