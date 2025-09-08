@@ -40,9 +40,9 @@ __global__ void matrix_mul(const float *a, const float *b, float *c, int size_m,
 
   float acc = 0.0F;
   for (int k = 0; k < size_k; k++) {
-    // acc += (a[(row * size_k) + k] * b[(size_n * k) + col]);
+    // acc += (a[(row * size_k) + k] * b[(k * size_n) + col]);
     // or
-    acc = fmaf(a[(row * size_k) + k], b[(size_n * k) + col], acc);
+    acc = fmaf(a[(row * size_k) + k], b[(k * size_n) + col], acc);
   }
   c[i] = acc;
 }
@@ -84,8 +84,8 @@ int main(int argc, char *argv[]) {
       unsigned int i = (y * SIZE_N) + x;
       float acc = 0.0F;
       for (int k = 0; k < SIZE_K; k++) {
-        // h_hc[i] += (h_a[(y * SIZE_K) + k] * h_b[(SIZE_N * k) + x]);
-        acc = fmaf(h_a[(y * SIZE_K) + k], h_b[(SIZE_N * k) + x], acc);
+        // h_hc[i] += (h_a[(y * SIZE_K) + k] * h_b[(k * SIZE_N) + x]);
+        acc = fmaf(h_a[(y * SIZE_K) + k], h_b[(k * SIZE_N) + x], acc);
       }
       h_hc[i] = acc;
     }
