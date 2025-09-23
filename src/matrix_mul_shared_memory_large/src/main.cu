@@ -72,13 +72,13 @@ __global__ void matrix_mul_shared(const float *a, const float *b, float *c) {
     // if (col >= SIZE_N || (stride + local_row) >= SIZE_K) {
     //   shared_b[local_row][local_col] = 0.0F;
     // } else {
-      shared_b[local_row][local_col] = b[((stride + local_row) * SIZE_N) + col];
+      shared_b[local_col][local_row] = b[((stride + local_row) * SIZE_N) + col];
     // }
 
     __syncthreads(); // wait until all threads finish loading
 
     for (int index = 0; index < BLOCK_SIZE; index++) {
-      acc = fmaf(shared_a[local_row][index], shared_b[index][local_col], acc);
+      acc = fmaf(shared_a[local_row][index], shared_b[local_col][index], acc);
     }
 
     __syncthreads(); // wait until all threads finish computing
