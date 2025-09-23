@@ -112,4 +112,3 @@ deviceQuery, CUDA Driver = CUDART, CUDA Driver Version = 12.8, CUDA Runtime Vers
 Result = PASS
 ```
 
-- blocksPerGrid: ``
