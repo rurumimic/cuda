@@ -7,6 +7,7 @@
   - [quick start](https://docs.nvidia.com/cuda/cuda-quick-start-guide/index.html)
   - [support compiler](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/#host-compiler-support-policy)
   - [best practices guide](https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/)
+  - [cuda c++ programming guide](https://docs.nvidia.com/cuda/cuda-c-programming-guide/)
 - source
   - [samples](https://developer.nvidia.com/cuda-code-samples)
   - github: [nvidia/cuda-samples](https://github.com/nvidia/cuda-samples)
@@ -102,4 +103,8 @@ counted 107310 instances of 'x', 'y', 'z', or 'w' in "./warandpeace.txt"
 - book: [Programming Massively Parallel Processors](https://www.oreilly.com/library/view/programming-massively-parallel/9780323984638)
 - book: [CUDA Programming](https://github.com/bluekds/CUDA_Programming)
 - book: [The Art of HPC](https://theartofhpc.com/)
+- youtube: [CUDA Programming Course – High-Performance Computing with GPUs](https://www.youtube.com/watch?v=86FAWCzIe_4)
+- youtube: [GPU MODE](https://www.youtube.com/@GPUMODE)
+- [GPU Glossary](https://modal.com/gpu-glossary)
+- UIUC: [Introduction to Parallel Programming with CUDA](https://newfrontiers.illinois.edu/news-and-events/introduction-to-parallel-programming-with-cuda/)
 
