@@ -164,24 +164,39 @@ int main(int argc, char *argv[]) {
   printf("Block Dim: (%d, %d, %d)\n", blockDim.x, blockDim.y, blockDim.z);
   printf("Grid Dim: (%d, %d, %d)\n", gridDim.x, gridDim.y, gridDim.z);
 
+  cudaEvent_t event_start;
+  cudaEvent_t event_end;
+  cudaEventCreate(&event_start);
+  cudaEventCreate(&event_end);
+
   printf("Launch matrix_mul kernel\n");
   start = std::chrono::steady_clock::now();
+  cudaEventRecord(event_start);
   matrix_mul<<<gridDim, blockDim>>>(d_a, d_b, d_c, SIZE_M, SIZE_N, SIZE_K);
+  cudaEventRecord(event_end);
   cudaDeviceSynchronize();
   end = std::chrono::steady_clock::now();
   millis = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
   checkCudaError(cudaGetLastError(), "Failed to launch kernel");
   printf("Kernel execution duration: %ld ms\n", millis.count());
+  float event_millis = 0.0F;
+  cudaEventElapsedTime(&event_millis, event_start, event_end);
+  printf("Kernel execution duration (event): %f ms\n", event_millis);
   printf("\n");
 
   printf("Launch matrix_mul_shared kernel\n");
   start = std::chrono::steady_clock::now();
+  cudaEventRecord(event_start);
   matrix_mul_shared<<<gridDim, blockDim>>>(d_a, d_b, d_c);
+  cudaEventRecord(event_end);
   cudaDeviceSynchronize();
   end = std::chrono::steady_clock::now();
   millis = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
   checkCudaError(cudaGetLastError(), "Failed to launch kernel");
   printf("Kernel execution duration: %ld ms\n", millis.count());
+  event_millis = 0.0F;
+  cudaEventElapsedTime(&event_millis, event_start, event_end);
+  printf("Kernel execution duration (event): %f ms\n", event_millis);
   printf("\n");
 
   printf("Copy: Device to Host\n");
@@ -203,6 +218,9 @@ int main(int argc, char *argv[]) {
   }
   printf("Result verification: OK\n");
   printf("\n");
+
+  cudaEventDestroy(event_start);
+  cudaEventDestroy(event_end);
 
   printf("Free Device memory\n");
   freeDeviceMemory(d_a, "d_a");

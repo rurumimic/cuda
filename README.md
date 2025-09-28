@@ -97,5 +97,6 @@ counted 107310 instances of 'x', 'y', 'z', or 'w' in "./warandpeace.txt"
 
 ## Ref
 
+- book: [Programming Massively Parallel Processors](https://www.oreilly.com/library/view/programming-massively-parallel/9780323984638)
 - book: [CUDA Programming](https://github.com/bluekds/CUDA_Programming)
 
