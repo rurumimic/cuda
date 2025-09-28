@@ -186,6 +186,10 @@ int main(int argc, char *argv[]) {
   printf("even: %d, odd: %d\n", even, odd); // even: 64, odd: 64
   printf("Kernel execution duration: %ld μs\n", duration.count());
 
+  cudaFree(d_global_count);
+  cudaFree(d_even);
+  cudaFree(d_odd);
+
   return EXIT_SUCCESS;
 }
 
