@@ -9,10 +9,16 @@ uv venv
 source .venv/bin/activate
 ```
 
-### Install HF Transfer
+### Install HuggingFace CLI
 
 ```bash
-uv pip install "huggingface_hub[hf_transfer]"
+uv pip install "huggingface_hub"
+```
+
+#### Login to HuggingFace
+
+```bash
+hf auth login
 ```
 
 ## Download Models
@@ -25,7 +31,11 @@ cd model_repository/nomic-embed-text-v1.5/1
 ```
 
 ```bash
-HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download "nomic-ai/nomic-embed-text-v1.5" --local-dir nomic-embed-text-v1.5
+# dry-run
+hf download --dry-run "nomic-ai/nomic-embed-text-v1.5" --local-dir nomic-embed-text-v1.5
+
+# run
+hf download "nomic-ai/nomic-embed-text-v1.5" --local-dir nomic-embed-text-v1.5
 ```
 
 ### gte-multilingual-reranker-base
@@ -36,7 +46,7 @@ cd model_repository/gte-multilingual-reranker-base/1
 ```
 
 ```bash
-HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download "Alibaba-NLP/gte-multilingual-reranker-base" --local-dir gte-multilingual-reranker-base
+hf download "Alibaba-NLP/gte-multilingual-reranker-base" --local-dir gte-multilingual-reranker-base
 ```
 
 ### roberta-base-go_emotions
@@ -47,7 +57,7 @@ cd model_repository/roberta-base-go_emotions/1
 ```
 
 ```bash
-HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download "SamLowe/roberta-base-go_emotions" --local-dir roberta-base-go_emotions
+hf download "SamLowe/roberta-base-go_emotions" --local-dir roberta-base-go_emotions
 ```
 
 ### efficient-splade-VI-BT-large-query
@@ -58,7 +68,7 @@ cd model_repository/efficient-splade-VI-BT-large-query/1
 ```
 
 ```bash
-HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download "naver/efficient-splade-VI-BT-large-query" --local-dir efficient-splade-VI-BT-large-query
+hf download "naver/efficient-splade-VI-BT-large-query" --local-dir efficient-splade-VI-BT-large-query
 ```
 
 ### Models
